@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "KeymapViewer: Search By Keys",
+        "command": "keymap_viewer"
+    },
+    {
+        "caption": "KeymapViewer: Show By Packages",
+        "command": "keymap_viewer_by_package"
+    }
+]
