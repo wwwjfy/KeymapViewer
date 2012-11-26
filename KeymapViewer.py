@@ -31,8 +31,7 @@ class KeymapViewerCommand(sublime_plugin.TextCommand):
     keymaps = None
 
     def run(self, edit):
-        if self.keymaps is None:
-            self.keymaps = []
+        self.keymaps = []
         ignored_packages = self.view.settings().get("ignored_packages", [])
         packages_path = sublime.packages_path()
         for subitem in os.listdir(packages_path):
@@ -59,11 +58,15 @@ class KeymapViewerCommand(sublime_plugin.TextCommand):
             for keymap in keymaps:
                 command = keymap.get('command')
                 keys = keymap.get('keys')
+                args = keymap.get('args')
                 if not command or not keys:
                     continue
-                self.keymaps.append([', '.join(keys),
-                                     'Package: ' + subitem,
-                                     'Command: ' + command])
+                item = [', '.join(keys),
+                        'Package: ' + subitem,
+                        'Command: ' + command]
+                if args:
+                    item.append('Args: ' + str(args))
+                self.keymaps.append(item)
         self.view.window().show_quick_panel(self.keymaps, self.on_selected)
 
     def on_selected(self, index):
