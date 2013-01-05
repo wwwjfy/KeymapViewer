@@ -74,11 +74,26 @@ class KeymapViewerCommand(sublime_plugin.TextCommand):
             return
 
         package = self.keymaps[index][1][9:]
+        command = self.keymaps[index][2][9:]
         keymap_file = os.path.join(sublime.packages_path(),
                                    package,
                                    'Default (%s).sublime-keymap' %
                                         platform_dict.get(sublime.platform()))
+        window = self.view.window()
         self.view.window().open_file(keymap_file)
+
+        def goto():
+            if window.active_view().is_loading():
+                sublime.set_timeout(goto, 10)
+                return
+            view = window.active_view()
+            region = view.find(command, 0, sublime.LITERAL)
+            view.text_point(*view.rowcol(region.a))
+            view.sel().clear()
+            view.sel().add(region)
+            view.show(region, True)
+
+        sublime.set_timeout(goto, 10)
 
 
 class KeymapViewerByPackageCommand(sublime_plugin.TextCommand):
